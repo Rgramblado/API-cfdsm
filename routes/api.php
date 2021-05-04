@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KlinesController;
+use App\Http\Controllers\MarketsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/register', [AuthController::class, 'register']);
 
 Route::post('/auth/login', [AuthController::class, 'login']);
+
+Route::get('/klines/last', [KlinesController::class, 'index']);
+
+Route::get('/ticker/24h', [MarketsController::class, 'getTicker']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', function(Request $request) {

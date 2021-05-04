@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateKlines15msTable extends Migration
@@ -22,13 +23,28 @@ class CreateKlines15msTable extends Migration
             $table->unsignedDecimal('close', 20, 10);
             $table->unsignedDecimal('high', 20, 10);
             $table->unsignedDecimal('low', 20, 10);
-            $table->unsignedDecimal('base_volume', 30, 10);
-            $table->unsignedDecimal('taker_volume', 30, 10);
             $table->timestamps();
 
             $table->foreign('market_id')->references('id')->on('markets');
             $table->index('market_id');
+            $table->unique(['market_id', 'open_time']);
         });
+
+        DB::unprepared('CREATE TRIGGER `Update_kline_15m_trigger` BEFORE UPDATE ON `klines15ms`
+        FOR EACH ROW BEGIN
+               IF NEW.close > OLD.high THEN
+                   SET NEW.high = NEW.close;
+               END IF;
+               IF NEW.close < OLD.low THEN
+                   SET NEW.low = NEW.close;
+               END IF;
+               SET NEW.updated_at = CURRENT_TIMESTAMP();
+           END');
+        DB::unprepared('CREATE TRIGGER `Insert_kline_15m_trigger` BEFORE INSERT ON `klines15ms`
+        FOR EACH ROW BEGIN
+            SET NEW.created_at = CURRENT_TIMESTAMP();
+            SET NEW.updated_at = CURRENT_TIMESTAMP();
+        END');
     }
 
     /**
@@ -39,5 +55,6 @@ class CreateKlines15msTable extends Migration
     public function down()
     {
         Schema::dropIfExists('klines15ms');
+        DB::unprepared('DROP TRIGGER `Update_kline_15m_trigger`');
     }
 }
