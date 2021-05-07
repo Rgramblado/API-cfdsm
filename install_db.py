@@ -3,6 +3,7 @@ import json
 import time
 import mysql.connector
 import datetime
+import base64
 
 START_TIME = 1609459200000
 LAST_TIME_IN_MARKET_15m = START_TIME
@@ -16,7 +17,7 @@ def get_markets():
     markets = (json.loads(req))["symbols"]
     sql = """INSERT INTO markets (name, start_time, created_at, updated_at) VALUES """
     for market in markets:
-        if(market["contractType"] != "PERPETUAL"):
+        if(market["contractType"] != "PERPETUAL" or market["symbol"].find("USDT")<0):
             continue
         sql += """('""" + market["symbol"] + """', FROM_UNIXTIME(""" + str(int(
             market["onboardDate"])/1000) + """), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),"""
@@ -60,8 +61,39 @@ def insert_kline(symbol, interval, data):
     cursor.execute(sql)
     db.commit()
 
+def get_markets_icons():
+    CLAVE_API = "4481f7c1-0cf5-4b62-85a2-89a256be0a22"
+
+    db = mysql.connector.connect(host="localhost", user="root", password="", database="cfdsm")
+    cursor = db.cursor()
+    cursor.execute("SELECT name FROM markets")
+
+    markets = []
+    for m in cursor.fetchall():
+        if(m[0].find("USDT") > 0):
+            if(m[0].find("IOTA") >= 0):
+                markets.append("MIOTA")
+            else:
+                markets.append(m[0][:m[0].find("USDT")])
+
+    s = ","
+    s = s.join(markets)
+
+    req_s = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?CMC_PRO_API_KEY={}&symbol={}".format(CLAVE_API, s)
+
+    data = (requests.get(req_s).json())
+
+    for a in data["data"]:
+        img = "data:image/png;base64," + (base64.b64encode(requests.get(data["data"][a]["logo"]).content)).decode("UTF-8")
+        sql = "UPDATE markets SET icon='{}' WHERE name LIKE '{}%'".format(img, a)
+        cursor.execute(sql)
+
+    db.commit()
+
+
 
 get_markets()
+get_markets_icons()
 get_markets_id()
 
 while True:

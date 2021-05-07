@@ -17,6 +17,7 @@ class CreateMarketsTable extends Migration
             $table->id();
             $table->string('name', 13)->unique();
             $table->timestamp('start_time')->nullable();
+            $table->binary('icon');
             $table->timestamps();
         });
     }
