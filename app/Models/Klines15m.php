@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Klines15m extends Model
 {
     use HasFactory;
+
+    public function market(){
+        return $this->belongsTo(Market::class);
+    }
 }

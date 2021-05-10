@@ -15,4 +15,5 @@ class MarketsController extends Controller
     public function getTicker(){
         return json_encode(Ticker24h::with('market')->get());
     }
+
 }

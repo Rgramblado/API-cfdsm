@@ -21,9 +21,11 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 
-Route::get('/klines/last', [KlinesController::class, 'index']);
+Route::get('/klines/last', [KlinesController::class, 'getLastKline']);
 
 Route::get('/ticker/24h', [MarketsController::class, 'getTicker']);
+
+Route::get('/markets', [KlinesController::class, 'getMarketsUTCData']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', function(Request $request) {
