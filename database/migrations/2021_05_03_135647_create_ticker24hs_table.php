@@ -18,6 +18,9 @@ class CreateTicker24hsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('market_id')->unique();
             $table->decimal('last_price', 30, 10);
+            $table->decimal('high', 30, 10);
+            $table->decimal('low', 30, 10);
+            $table->decimal('open', 30, 10);
             $table->decimal('price_change', 20, 10);
             $table->timestamps();
 
@@ -29,10 +32,7 @@ class CreateTicker24hsTable extends Migration
             SET NEW.created_at = CURRENT_TIMESTAMP();
             SET NEW.updated_at = CURRENT_TIMESTAMP();
         END');
-        DB::unprepared('CREATE TRIGGER `Update_ticker_24h_trigger` BEFORE UPDATE ON `ticker24hs`
-        FOR EACH ROW BEGIN
-            SET NEW.updated_at = CURRENT_TIMESTAMP();
-        END');
+        
 
 
     }

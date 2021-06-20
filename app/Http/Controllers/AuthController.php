@@ -8,10 +8,98 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @OA\Info(title="API CFDSM", version="1.0")
+ * 
+ *  @OA\Server(url="https://cfdsm.es")
+ */
 class AuthController extends Controller
-{
+{   
+    /**
+     * @OA\Get(
+     *  path="/api/me",
+     *  summary="Datos del usuario",
+     *  @OA\Response(
+     *      response=200,
+     *      description="Devuelve los datos del usuario"
+     *  ),
+     *  @OA\Response(
+     *      response=500,
+     *      description="Datos para del usuario (token) incorrectos"
+     *  )
+     *  
+     * )
+     */
     use ApiResponser;
-
+    /**
+     * @OA\Post(
+     *  path="/api/auth/register",
+     *  summary="Registro de usuarios",
+     *  @OA\Parameter(
+     *      name = "username",
+     *      description = "Nombre de usuario para el registro",
+     *      required = true, 
+     *      in="path",
+     *      @OA\Schema(
+     *          type="String"
+     *      )
+     *  ),
+     *  @OA\Parameter(
+     *      name = "name",
+     *      description = "Nombre real del usuario para el registro",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="String"
+     *      )
+     *  ),
+     *  @OA\Parameter(
+     *      name = "surname",
+     *      description = "Apellido(s) del usuario para el registro",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="String"
+     *      )
+     *  ),
+     *  @OA\Parameter(
+     *      name = "email",
+     *      description = "Correo electrónico del usuario para el registro",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="E-mail"
+     *      )
+     *  ),
+     *  @OA\Parameter(
+     *      name = "password",
+     *      description = "Contraseña del usuario para el registro",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="String"
+     *      )
+     *  ),
+     *  @OA\Parameter(
+     *      name = "password_confirmation",
+     *      description = "Confirmación de contraseña del usuario para el registro",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="String"
+     *      )
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Registro de usuario"
+     *  )
+     *  ,
+     *  @OA\Response(
+     *      response=429,
+     *      description="Datos para el registro inválidos"
+     *  )
+     * )
+     */
     public function register(Request $request)
     {
         $rules = [
@@ -36,7 +124,8 @@ class AuthController extends Controller
             'name' => $attr['name'],
             'surname' => $attr['surname'],
             'password' => bcrypt($attr['password']),
-            'email' => $attr['email']
+            'email' => $attr['email'],
+            'wallet' => 10000
         ]);
 
         return $this->success([
@@ -44,6 +133,43 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *  path="/api/auth/login",
+     *  summary="Inicio de sesión de usuarios",
+     *  @OA\Parameter(
+     *      name = "email",
+     *      description = "Correo electrónico del usuario",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="E-mail"
+     *      )
+     *  ),
+     *  @OA\Parameter(
+     *      name = "password",
+     *      description = "Contraseña del usuario",
+     *      required = true,  
+     *      in="path",
+     *      @OA\Schema(
+     *          type="String"
+     *      )
+     *  ),
+     *  @OA\Response(
+     *      response=200,
+     *      description="Inicio de sesión correcto"
+     *  ),
+     *  @OA\Response(
+     *      response=401,
+     *      description="Datos para el inicio de sesión incorrectos"
+     *  )
+     *  ,
+     *  @OA\Response(
+     *      response=429,
+     *      description="Datos para el inicio de sesión inválidos"
+     *  )
+     * )
+     */
     public function login(Request $request)
     {
         $attr = $request->validate([
@@ -61,6 +187,21 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *  path="/api/auth/logout",
+     *  summary="Cierre de sesión de usuarios",
+     *  @OA\Response(
+     *      response=200,
+     *      description="Cierre de sesión correcto"
+     *  ),
+     *  @OA\Response(
+     *      response=500,
+     *      description="Datos para el cierre de sesión incorrectos"
+     *  )
+     *  
+     * )
+     */
     public function logout()
     {
         auth()->user()->tokens()->delete();
@@ -69,4 +210,5 @@ class AuthController extends Controller
             'message' => 'Tokens Revoked'
         ];
     }
+
 }

@@ -1,0 +1,389 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API CFDSM",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://cfdsm.es"
+        }
+    ],
+    "paths": {
+        "/api/me": {
+            "get": {
+                "summary": "Datos del usuario",
+                "responses": {
+                    "200": {
+                        "description": "Devuelve los datos del usuario"
+                    },
+                    "500": {
+                        "description": "Datos para del usuario (token) incorrectos"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "summary": "Registro de usuarios",
+                "operationId": "App\\Http\\Controllers\\AuthController::register",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "Nombre de usuario para el registro",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Nombre real del usuario para el registro",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    },
+                    {
+                        "name": "surname",
+                        "in": "path",
+                        "description": "Apellido(s) del usuario para el registro",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Correo electrónico del usuario para el registro",
+                        "required": true,
+                        "schema": {
+                            "type": "E-mail"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "path",
+                        "description": "Contraseña del usuario para el registro",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "path",
+                        "description": "Confirmación de contraseña del usuario para el registro",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registro de usuario"
+                    },
+                    "429": {
+                        "description": "Datos para el registro inválidos"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "summary": "Inicio de sesión de usuarios",
+                "operationId": "App\\Http\\Controllers\\AuthController::login",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Correo electrónico del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "E-mail"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "path",
+                        "description": "Contraseña del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión correcto"
+                    },
+                    "401": {
+                        "description": "Datos para el inicio de sesión incorrectos"
+                    },
+                    "429": {
+                        "description": "Datos para el inicio de sesión inválidos"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "summary": "Cierre de sesión de usuarios",
+                "operationId": "App\\Http\\Controllers\\AuthController::logout",
+                "responses": {
+                    "200": {
+                        "description": "Cierre de sesión correcto"
+                    },
+                    "500": {
+                        "description": "Datos para el cierre de sesión incorrectos"
+                    }
+                }
+            }
+        },
+        "/klines/last": {
+            "get": {
+                "summary": "Velas japonesas",
+                "operationId": "App\\Http\\Controllers\\KlinesController::getLastKline",
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "path",
+                        "description": "Nombre del mercado",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    },
+                    {
+                        "name": "interval",
+                        "in": "path",
+                        "description": "Intervalo deseado (15m, 1h o 4h)",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Devuelve la última vela japonesa del mercado seleccionado, en el intervalo seleccionado"
+                    },
+                    "429": {
+                        "description": "Alguno de los datos introducidos no es correcto"
+                    }
+                }
+            }
+        },
+        "/klines/": {
+            "get": {
+                "summary": "Velas japonesas",
+                "operationId": "App\\Http\\Controllers\\KlinesController::getKlines",
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "path",
+                        "description": "Nombre del mercado",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    },
+                    {
+                        "name": "interval",
+                        "in": "path",
+                        "description": "Intervalo deseado (15m, 1h o 4h)",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Devuelve las velas japonesas del mercado seleccionado, en el intervalo seleccionado"
+                    },
+                    "429": {
+                        "description": "Alguno de los datos introducidos no es correcto"
+                    }
+                }
+            }
+        },
+        "/api/markets": {
+            "get": {
+                "summary": "Datos de los mercados",
+                "operationId": "App\\Http\\Controllers\\MarketsController::getMarkets",
+                "responses": {
+                    "200": {
+                        "description": "Devuelve los datos de los mercados"
+                    }
+                }
+            }
+        },
+        "/api/market": {
+            "get": {
+                "summary": "Datos de un mercado",
+                "operationId": "App\\Http\\Controllers\\MarketsController::getMarket",
+                "parameters": [
+                    {
+                        "name": "market",
+                        "in": "path",
+                        "description": "Nombre del mercado",
+                        "required": true,
+                        "schema": {
+                            "type": "String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Devuelve los datos del mercado seleccionado"
+                    },
+                    "429": {
+                        "description": "Alguno de los datos introducidos no es correcto"
+                    }
+                }
+            }
+        },
+        "/api/ticker/24h": {
+            "get": {
+                "summary": "Datos de los precios de mercados",
+                "operationId": "App\\Http\\Controllers\\MarketsController::getTicker",
+                "responses": {
+                    "200": {
+                        "description": "Devuelve los precios de los mercados actualizados."
+                    }
+                }
+            }
+        },
+        "/api/user/operations/current": {
+            "get": {
+                "summary": "Datos de las operaciones actuales del usuario",
+                "operationId": "App\\Http\\Controllers\\OperationsController::currentIndex",
+                "responses": {
+                    "200": {
+                        "description": "Se ofrecen los datos de las operaciones actuales del usuario, de tipo market y limit ejecutadas."
+                    }
+                }
+            }
+        },
+        "/api/user/operations/pending": {
+            "get": {
+                "summary": "Datos de las operaciones pendientes del usuario",
+                "operationId": "App\\Http\\Controllers\\OperationsController::pendingIndex",
+                "responses": {
+                    "200": {
+                        "description": "Se ofrecen los datos de las operaciones actuales del usuario, de tipo limit\n     *      aun no ejecutadas."
+                    }
+                }
+            }
+        },
+        "/api/user/operations/historical": {
+            "get": {
+                "summary": "Datos de las operaciones históricas del usuario",
+                "operationId": "App\\Http\\Controllers\\OperationsController::historicalIndex",
+                "responses": {
+                    "200": {
+                        "description": "Se ofrecen los datos del histórico\n     *      de operaciones del usuario."
+                    }
+                }
+            }
+        },
+        "/api/user/operation/": {
+            "put": {
+                "summary": "Creación de una nueva operación",
+                "operationId": "App\\Http\\Controllers\\OperationsController::addOperation",
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "path",
+                        "description": "Mercado sobre el que realizar la operación",
+                        "required": true,
+                        "schema": {
+                            "type": "Number"
+                        }
+                    },
+                    {
+                        "name": "is_long",
+                        "in": "path",
+                        "description": "Operación de tipo long (true)/short (false)",
+                        "required": true,
+                        "schema": {
+                            "type": "Boolean"
+                        }
+                    },
+                    {
+                        "name": "leverage",
+                        "in": "path",
+                        "description": "Apalancamiento de la operación.",
+                        "required": true,
+                        "schema": {
+                            "type": "Number"
+                        }
+                    },
+                    {
+                        "name": "margin",
+                        "in": "path",
+                        "description": "Garantía ofrecida por el usuario en la operación.",
+                        "required": true,
+                        "schema": {
+                            "type": "Number"
+                        }
+                    },
+                    {
+                        "name": "limit_price",
+                        "in": "path",
+                        "description": "Precio límite de la operación, en caso de ser una operación de tipo limit.",
+                        "required": false,
+                        "schema": {
+                            "type": "Number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "La operación se ha creado correctamente."
+                    },
+                    "403": {
+                        "description": "La garantía ofrecida (margin) es superior a la cantidad disponible de fondos."
+                    },
+                    "429": {
+                        "description": "Alguno de los parámetros no es del tipo correcto."
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Creación de una nueva operación",
+                "operationId": "App\\Http\\Controllers\\OperationsController::closeOperation",
+                "parameters": [
+                    {
+                        "name": "op_id",
+                        "in": "path",
+                        "description": "Mercado sobre el que realizar la operación (id)",
+                        "required": true,
+                        "schema": {
+                            "type": "Integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "La operación se ha creado correctamente."
+                    },
+                    "403": {
+                        "description": "La operación no existe, o el usuario no está autorizado a eliminarla."
+                    },
+                    "429": {
+                        "description": "Alguno de los parámetros no es del tipo correcto."
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
